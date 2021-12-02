@@ -8,12 +8,16 @@ def get_tick_json(user='200633661/nathan-gallagher'):
     # get csv export from mtn-project
     url = f'https://www.mountainproject.com/user/{user}/tick-export'
     res = requests.get(url)
-    data = StringIO(res.text)
+    if res.status_code == 200:
+        data = StringIO(res.text)
 
-    # read the response into a pandas df and convert to json
-    df = pd.read_csv(data)
-    result = df.to_json(orient="records")
-    return result
+        # read the response into a pandas df and convert to json
+        df = pd.read_csv(data)
+        result = df.to_json(orient="records")
+        return result
+    else:
+        print(f'Error fetching data. Status: {res.status_code}; {res.reason}')
+        return [{}]
 
 app = Flask(__name__)
 
