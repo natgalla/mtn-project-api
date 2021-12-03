@@ -8,10 +8,12 @@
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
-    <div id='someChart'></div>
+    <div id='pitchByGrade'></div>
+    <div id='lengthByGrade'></div>
     <script type='text/javascript'>
       var data = {{ data | safe }};
     </script>
+    <script src="{{ url_for('static', filename='js/functions.js') }}"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>

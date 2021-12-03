@@ -7,60 +7,84 @@ if (data) {
   console.log('Data loaded successfully');
 }
 
-// function to scrub dumb noise from ratings
-function cleanRating(rating) {
-  let grade_reg = /[\s\/]\w+/
-  let mods_reg = /[+-]/
-  rating = rating.replace(grade_reg, '');
-  rating = rating.replace(mods_reg, '');
-  return rating
-}
 
-function sortRating(a, b) {
-  function ratingMod(input) {
-    if (input.indexOf('a') > -1) {
-      return 0.1
-    } else if (input.indexOf('b') > -1) {
-      return 0.2
-    } else if (input.indexOf('c') > -1) {
-      return 0.3
-    } else if (input.indexOf('d') > -1) {
-      return 0.4
-    } else {
-      return 0
-    }
-  }
-  aMod = ratingMod(a.Rating)
-  bMod = ratingMod(b.Rating)
-  decimalA = parseInt(a.Rating.replace('5.',''));
-  decimalB = parseInt(b.Rating.replace('5.',''));
-  decimalA += aMod
-  decimalB += bMod
-  return decimalA - decimalB;
-}
+// routes by grade    // REFACTOR: MOSTLY REPEATS FOR LENGTH GRAPH
+                      // Data, mapping functions, layout object
+let sortedByGrade = data.sort(sortRating)
 
-sortedRatings = data.sort(sortRating)
+let pitchOnsights = sortedByGrade.map(mapPitchOnsights);
+let pitchAttempts = sortedByGrade.map(mapPitchAttempts);
+let pitchSends = sortedByGrade.map(mapPitchSends);
+let ratings = sortedByGrade.map(rating => cleanRating(rating.Rating));
 
-let pitches = sortedRatings.map(pitches => pitches.Pitches);
-let dates = data.map(date => date.Date);
-let ratings = sortedRatings.map(rating => cleanRating(rating.Rating));
-let distances = data.map(distance => distance.Length);
-
-let trace = {
+let onsightsP = {
   x: ratings,
-  y: pitches,
-  type: "bar"
+  y: pitchOnsights,
+  type: "bar",
+  name: "Onsights"
 };
 
-let layout = {
-  xaxis: { type: 'category' }
+let sendsP = {
+  x: ratings,
+  y: pitchSends,
+  type: "bar",
+  name: "Sends"
 };
-Plotly.newPlot('someChart', [trace], layout);
+
+let attemptsP = {
+  x: ratings,
+  y: pitchAttempts,
+  type: "bar",
+  name: "Attempts"
+}
+
+let layoutP = {
+  title: 'Sport pitches by grade',
+  xaxis: { type: 'category' },
+  barmode: 'stack'
+};
+Plotly.newPlot('pitchByGrade', [onsightsP, sendsP, attemptsP], layoutP);
+
+
+let dates = data.map(date => date.Date);
 
 // pitches by year
 // pitches by month
-// routes by grade
+
 // distance climbed
+let distOnsights = sortedByGrade.map(mapLengthOnsights);
+let distAttempts = sortedByGrade.map(mapLengthAttempts);
+let distSends = sortedByGrade.map(mapLengthSends);
+
+let onsightsL = {
+  x: ratings,
+  y: distOnsights,
+  type: "bar",
+  name: "Onsights"
+};
+
+let sendsL = {
+  x: ratings,
+  y: distSends,
+  type: "bar",
+  name: "Sends"
+};
+
+let attemptsL = {
+  x: ratings,
+  y: distAttempts,
+  type: "bar",
+  name: "Attempts"
+}
+
+let layoutL = {
+  title: 'Sport length by grade',
+  xaxis: { type: 'category' },
+  yaxis: { title: 'Length (ft)'},
+  barmode: 'stack'
+};
+Plotly.newPlot('lengthByGrade', [onsightsL, sendsL, attemptsL], layoutL);
+
 // top routes
 // top crags
 // top climbing areas
