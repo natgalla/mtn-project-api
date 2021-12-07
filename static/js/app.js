@@ -7,84 +7,34 @@ if (data) {
   console.log('Data loaded successfully');
 }
 
+let ticks = data;
 
-// routes by grade    // REFACTOR: MOSTLY REPEATS FOR LENGTH GRAPH
-                      // Data, mapping functions, layout object
-let sortedByGrade = data.sort(sortRating)
-
-let pitchOnsights = sortedByGrade.map(mapPitchOnsights);
-let pitchAttempts = sortedByGrade.map(mapPitchAttempts);
-let pitchSends = sortedByGrade.map(mapPitchSends);
-let ratings = sortedByGrade.map(rating => cleanRating(rating.Rating));
-
-let onsightsP = {
-  x: ratings,
-  y: pitchOnsights,
-  type: "bar",
-  name: "Onsights"
-};
-
-let sendsP = {
-  x: ratings,
-  y: pitchSends,
-  type: "bar",
-  name: "Sends"
-};
-
-let attemptsP = {
-  x: ratings,
-  y: pitchAttempts,
-  type: "bar",
-  name: "Attempts"
+// parse location info and add cleanRating property
+for (tick of ticks) {
+  try {
+    if (tick.Location.split(' > ').length === 3) {
+      tick.area = tick.Location.split(' > ')[1]; 
+      tick.crag = tick.Location.split(' > ')[2]; 
+    } else if (tick.Location.split(' > ').length === 4) {
+      tick.area = tick.Location.split(' > ')[2];
+      tick.crag = tick.Location.split(' > ')[3];  
+    }
+    tick.state = tick.Location.split(' > ')[0];
+    tick.region = tick.Location.split(' > ')[1];
+    tick.cleanRating = cleanRating(tick.Rating)
+  } catch (error) {
+    console.error(error);
+  } 
 }
 
-let layoutP = {
-  title: 'Sport pitches by grade',
-  xaxis: { type: 'category' },
-  barmode: 'stack'
-};
-Plotly.newPlot('pitchByGrade', [onsightsP, sendsP, attemptsP], layoutP);
+// pitches climbed
+graph('pitchByGrade', sortRating);
 
+// length climbed
+graph('lengthByGrade', sortRating, 'length');
 
-let dates = data.map(date => date.Date);
+graph('pitchByArea', sortRating, 'length', 'crag');
 
 // pitches by year
 // pitches by month
-
-// distance climbed
-let distOnsights = sortedByGrade.map(mapLengthOnsights);
-let distAttempts = sortedByGrade.map(mapLengthAttempts);
-let distSends = sortedByGrade.map(mapLengthSends);
-
-let onsightsL = {
-  x: ratings,
-  y: distOnsights,
-  type: "bar",
-  name: "Onsights"
-};
-
-let sendsL = {
-  x: ratings,
-  y: distSends,
-  type: "bar",
-  name: "Sends"
-};
-
-let attemptsL = {
-  x: ratings,
-  y: distAttempts,
-  type: "bar",
-  name: "Attempts"
-}
-
-let layoutL = {
-  title: 'Sport length by grade',
-  xaxis: { type: 'category' },
-  yaxis: { title: 'Length (ft)'},
-  barmode: 'stack'
-};
-Plotly.newPlot('lengthByGrade', [onsightsL, sendsL, attemptsL], layoutL);
-
-// top routes
-// top crags
-// top climbing areas
+let dates = data.map(row => row.Date);

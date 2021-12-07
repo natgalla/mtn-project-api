@@ -83,3 +83,56 @@ function mapLengthSends(row) {
      return row.Length
   }
 }
+
+function graph(divId, sortFunc, pitchLength='pitch', xaxis='cleanRating') {
+  let sorted = ticks.sort(sortFunc);
+  let mapOnsights;
+  let mapAttempts;
+  let mapSends;
+  x = sorted.map(row => row[xaxis]);
+  // let title;
+
+  if (pitchLength === 'pitch') {
+    mapOnsights = mapPitchOnsights;
+    mapAttempts = mapPitchAttempts;
+    mapSends = mapPitchSends;
+    // title = 'Sport pitches by grade';
+  } else if (pitchLength === 'length') {
+    mapOnsights = mapLengthOnsights;
+    mapAttempts = mapLengthAttempts;
+    mapSends = mapLengthSends;
+    // title = 'Length climbed by grade (ft)';
+  }
+
+  let onsights = sorted.map(mapOnsights);
+  let attempts = sorted.map(mapAttempts);
+  let sends = sorted.map(mapSends);
+
+  let onsightsTrace = {
+    x: x,
+    y: onsights,
+    type: "bar",
+    name: "Onsights"
+  };
+
+  let sendsTrace = {
+    x: x,
+    y: sends,
+    type: "bar",
+    name: "Sends"
+  };
+
+  let attemptsTrace = {
+    x: x,
+    y: attempts,
+    type: "bar",
+    name: "Attempts"
+  }
+
+  let layout = {
+    // title: title,
+    xaxis: { type: 'category' },
+    barmode: 'stack'
+  };
+  Plotly.newPlot(divId, [onsightsTrace, sendsTrace, attemptsTrace], layout);
+}
