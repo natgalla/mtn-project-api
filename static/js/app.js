@@ -33,7 +33,7 @@ graph('pitchByGrade', sortRating);
 // length climbed
 graph('lengthByGrade', sortRating, 'length');
 
-graph('pitchByArea', sortRating, 'length', 'crag');
+graph('pitchByArea', sortRating, 'pitch', 'crag');
 
 // pitches by year
 // pitches by month
