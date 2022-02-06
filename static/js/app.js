@@ -27,14 +27,21 @@ for (tick of ticks) {
   } 
 }
 
-// pitches climbed
-graph('pitchByGrade', sortRating);
+// pitches climbed by grade
+graph('pitchByGrade', sortRating, 'Pitches by Grade');
 
-// length climbed
-graph('lengthByGrade', sortRating, 'length');
+// length climbed by grade
+graph('lengthByGrade', sortRating, 'Length by Grade (ft)', 'length');
 
-graph('pitchByArea', sortRating, 'pitch', 'crag');
+// pitches by area
+graph('pitchByArea', sortRating, 'Pitches by Area', 'pitch', 'crag');
+
+// length clibmed by area
+graph('lengthByArea', sortRating, 'Length by Area (ft)', 'length', 'crag');
 
 // pitches by year
 // pitches by month
 let dates = data.map(row => row.Date);
+
+// TODO: sort by date function
+// graph('pitchByDate', sortRating, 'Pitch by Date', 'pitch', 'Date');

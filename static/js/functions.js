@@ -84,24 +84,21 @@ function mapLengthSends(row) {
   }
 }
 
-function graph(divId, sortFunc, pitchLength='pitch', xaxis='cleanRating') {
+function graph(divId, sortFunc, title, pitchLength='pitch', xaxis='cleanRating') {
   let sorted = ticks.sort(sortFunc);
   let mapOnsights;
   let mapAttempts;
   let mapSends;
   x = sorted.map(row => row[xaxis]);
-  // let title;
 
   if (pitchLength === 'pitch') {
     mapOnsights = mapPitchOnsights;
     mapAttempts = mapPitchAttempts;
     mapSends = mapPitchSends;
-    // title = 'Sport pitches by grade';
   } else if (pitchLength === 'length') {
     mapOnsights = mapLengthOnsights;
     mapAttempts = mapLengthAttempts;
     mapSends = mapLengthSends;
-    // title = 'Length climbed by grade (ft)';
   }
 
   let onsights = sorted.map(mapOnsights);
@@ -130,7 +127,7 @@ function graph(divId, sortFunc, pitchLength='pitch', xaxis='cleanRating') {
   }
 
   let layout = {
-    // title: title,
+    title: title,
     xaxis: { type: 'category' },
     barmode: 'stack'
   };
